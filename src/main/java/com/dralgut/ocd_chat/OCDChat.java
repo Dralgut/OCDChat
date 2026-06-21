@@ -24,7 +24,7 @@ public final class OCDChat extends JavaPlugin {
         logger.info("Hello World");
 
         load();
-        Bukkit.getPluginManager().registerEvents(new ChatCore(),this);
+        Bukkit.getPluginManager().registerEvents(new ChatCore(), this);
 
         int pluginId = 29746;
         Metrics metrics = new Metrics(this, pluginId);
@@ -40,7 +40,7 @@ public final class OCDChat extends JavaPlugin {
 
     }
 
-    public void load(){
+    public void load() {
         instance = this;
         PAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 

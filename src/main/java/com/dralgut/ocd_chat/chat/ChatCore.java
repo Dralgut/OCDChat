@@ -36,13 +36,13 @@ public class ChatCore implements Listener {
     private static String nobodySawMessage;
     private static String noAccessToChatMessage;
 
-    public static void load(){
+    public static void load() {
         FileConfiguration config = OCDChat.config;
 
         isPingEnable = config.getBoolean("ping.enable", false);
-        if (isPingEnable){
+        if (isPingEnable) {
             pingPrefix = config.getString("ping.prefix", "@");
-            pingPrefixPattern = Pattern.compile(Pattern.quote(pingPrefix)+"(\\w+)");
+            pingPrefixPattern = Pattern.compile(Pattern.quote(pingPrefix) + "(\\w+)");
             pingFormat = config.getString("ping.format", "§f§l§{player}§r");
             pingActiveFormat = config.getString("ping.active_format", "§6§l§n{player}§r");
             pingSound = config.getString("ping.sound", "minecraft:block.note_block.pling");
@@ -53,16 +53,20 @@ public class ChatCore implements Listener {
     }
 
     @EventHandler
-    public void onChatEvent(AsyncPlayerChatEvent e){
-        if(e.isCancelled()) return;
+    public void onChatEvent(AsyncPlayerChatEvent e) {
+        if (e.isCancelled()) return;
         e.setCancelled(true);
 
         Player sender = e.getPlayer();
         String message = e.getMessage();
 
         ChatTypeManager.ChatType type = ChatTypeManager.getType(message);
+        if (type == null) {
+            return;
+        }
+
         String permission = type.permission();
-        if (permission.isEmpty() || sender.hasPermission(permission)){
+        if (permission.isEmpty() || sender.hasPermission(permission)) {
             int distance = type.distance();
             Set<Player> recipients = getRecipients(sender, distance);
 
@@ -71,10 +75,10 @@ public class ChatCore implements Listener {
                 recipient.sendMessage(processedMessage);
             }
 
-            if (recipients.size() < 2){
+            if (recipients.size() < 2) {
                 printError(sender, nobodySawMessage);
             }
-        }else {
+        } else {
             printError(sender, noAccessToChatMessage);
         }
     }
@@ -116,8 +120,8 @@ public class ChatCore implements Listener {
         return builder.toString();
     }
 
-    private void printError(Player player, String errorMessage){
-        if(!errorMessage.isEmpty()) {
+    private void printError(Player player, String errorMessage) {
+        if (!errorMessage.isEmpty()) {
             player.sendMessage(errorMessage);
         }
     }
@@ -134,7 +138,7 @@ public class ChatCore implements Listener {
         }
 
         final int finalDistance = Math.max(distance, 0);
-        final int squaredDistance = finalDistance*finalDistance;
+        final int squaredDistance = finalDistance * finalDistance;
         final Location senderLocation = sender.getLocation();
 
         return worldPlayers.stream()
@@ -146,7 +150,7 @@ public class ChatCore implements Listener {
                 .collect(Collectors.toSet());
     }
 
-    private String processFormat(ChatTypeManager.ChatType type, Player sender, String message){
+    private String processFormat(ChatTypeManager.ChatType type, Player sender, String message) {
         String format = ChatColor.translateAlternateColorCodes('&', type.format());
 
         if (OCDChat.PAPI) format = PlaceholderAPI.setPlaceholders(sender, format);

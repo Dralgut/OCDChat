@@ -21,7 +21,8 @@ public class ServerMessageManager {
     private static BukkitTask task;
     private static int pos;
 
-    public record ServerMessage(String name, String[] lines){}
+    public record ServerMessage(String name, String[] lines) {
+    }
 
     public static void load() {
         stop();
@@ -35,10 +36,10 @@ public class ServerMessageManager {
         ConfigurationSection component = config.getConfigurationSection("server_messages.messages");
         if (component == null) return;
 
-        for (String name : component.getKeys(false)){
+        for (String name : component.getKeys(false)) {
             List<String> rawLines = component.getStringList(name);
 
-            if (rawLines.isEmpty()){
+            if (rawLines.isEmpty()) {
                 OCDChat.logger.warning(String.format("Invalid parameters for server message '%s' :(", name));
                 continue;
             }
@@ -62,7 +63,7 @@ public class ServerMessageManager {
             String[] lines = message.lines();
             for (Player player : Bukkit.getOnlinePlayers()) player.sendMessage(lines);
         } else {
-            for (Player player : Bukkit.getOnlinePlayers()){
+            for (Player player : Bukkit.getOnlinePlayers()) {
                 String[] personalizedLines = Arrays.stream(message.lines())
                         .map(line -> PlaceholderAPI.setPlaceholders(player, line))
                         .toArray(String[]::new);
@@ -82,7 +83,7 @@ public class ServerMessageManager {
     }
 
     public static void start() {
-        if (!MESSAGES.isEmpty() && task == null){
+        if (!MESSAGES.isEmpty() && task == null) {
             task = Bukkit.getScheduler().runTaskTimer(OCDChat.getInstance(),
                     ServerMessageManager::broadcastMessage,
                     0L,

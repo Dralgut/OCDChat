@@ -10,7 +10,8 @@ public class ChatTypeManager {
     private static final Set<ChatType> TYPES = new HashSet<>();
     private static final int MIN_VALID_DISTANCE = -2;
 
-    public record ChatType(String prefix, String permission, String format, int distance){}
+    public record ChatType(String prefix, String permission, String format, int distance) {
+    }
 
     public static void load() {
         TYPES.clear();
@@ -18,17 +19,17 @@ public class ChatTypeManager {
         FileConfiguration config = OCDChat.config;
 
         ConfigurationSection component = config.getConfigurationSection("chat.types");
-        if (component == null)return;
+        if (component == null) return;
 
-        for (String typeName : component.getKeys(false)){
-            final String path = "chat.types."+typeName;
+        for (String typeName : component.getKeys(false)) {
+            final String path = "chat.types." + typeName;
 
-            final String prefix = config.getString(path+".prefix");
-            final String permission = config.getString(path+".permission");
-            final String format = config.getString(path+".format");
-            final int distance = config.getInt(path+".distance", MIN_VALID_DISTANCE-1);
+            final String prefix = config.getString(path + ".prefix");
+            final String permission = config.getString(path + ".permission");
+            final String format = config.getString(path + ".format");
+            final int distance = config.getInt(path + ".distance", MIN_VALID_DISTANCE - 1);
 
-            if(!isValidChatType(prefix, permission, format, distance, typeName)){
+            if (!isValidChatType(prefix, permission, format, distance, typeName)) {
                 continue;
             }
 
@@ -65,7 +66,7 @@ public class ChatTypeManager {
         return TYPES;
     }
 
-    public static ChatType getType(String message){
+    public static ChatType getType(String message) {
         if (message == null || message.isEmpty()) {
             return null;
         }
